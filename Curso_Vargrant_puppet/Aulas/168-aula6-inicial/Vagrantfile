@@ -1,0 +1,20 @@
+#vagrant plugin install vagrant-aws
+#vagrant box add --force dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box
+#vagrant up aws_web --provider=aws
+#vagrant destroy -f aws_web 
+
+Vagrant.configure("2") do |config|
+
+  config.vm.provider "virtualbox"
+
+ config.vm.define :web do |web_config|
+    #usando ubuntu 18.04
+		web_config.vm.box = "ubuntu/bionic64"
+		web_config.vm.network "private_network", ip: "192.168.50.10"
+    web_config.vm.provision "shell", path: "manifests/bootstrap.sh"
+		web_config.vm.provision "puppet" do |puppet|
+       puppet.manifest_file = "web.pp"
+    end
+	end
+
+end
